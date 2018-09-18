@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Ajax 4 - Form</title>
+</head>
+<body>
+    <button id="getButton">Get Button</button>
+    <label for="name1">Name</label>
+    <input type="text" id="name1">
+    <label for="age1">Age</label>
+    <input type="text" id="age1">
+    <br><br>
+    <button id="postFormButton">Post Form Button</button>
+    <label for="name2">Name</label>
+    <input type="text" id="name2">
+    <label for="age2">Age</label>
+    <input type="text" id="age2">
+    <br><br>
+    <button id="postJsonButton">Post Json Button</button>
+    <label for="name3">Name</label>
+    <input type="text" id="name3">
+    <label for="age3">Age</label>
+    <input type="text" id="age3">
+    <br><br>
+    <button id="postDataButton">Post Data Button</button>
+    <label for="name4">Name</label>
+    <input type="text" id="name4">
+    <label for="age4">Age</label>
+    <input type="text" id="age4">
+    <br><br>
+    <div id="output"></div>
+    <script>
+        document.getElementById('getButton').addEventListener('click', getInfo);
+        function getInfo(){
+            const name = document.getElementById('name1').value;
+            const age = document.getElementById('age1').value;
+            const url = 'http://127.0.0.1:5000?name=' + name + '&age=' + age;
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', url, true);
+            xhr.setRequestHeader("Bearer-Token", "12345abced");
+            xhr.onload = function(){
+                if (this.status == 200){
+                    var output = this.responseText;
+                    console.log(output);
+                    document.getElementById('output').textContent = output;
+                }
+            }
+            xhr.send();  // get request won't send data here anyway
+        }
+
+        document.getElementById('postFormButton').addEventListener('click', postForm);
+        function postForm(){
+            var name = document.getElementById('name2').value;
+            var age = document.getElementById('age2').value;
+            var url = 'http://127.0.0.1:5000/';
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', url, true);
+            xhr.setRequestHeader("Bearer-Token", "12345abced");
+            xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhr.onload = function(){
+                if (this.status == 200){
+                    res = JSON.parse(this.responseText);
+                    output = `Your name is ${res.name} and you are ${res.age} years old.`;
+                    document.getElementById('output').textContent = output;
+                }
+            }
+            xhr.send(encodeURI('name='+name+'&age='+age));
+        }
+
+        document.querySelector('#postJsonButton').addEventListener('click', postJson);
+        function postJson(){
+            let name = document.querySelector('#name3').value;
+            let age = document.querySelector('#age3').value;
+            let userInfo = {'name': name, 'age': age};
+
+            let xhr = new XMLHttpRequest();
+            xhr.open('POST', 'http://127.0.0.1:5000/', true);
+            xhr.setRequestHeader("Bearer-Token", "12345abced");
+            xhr.setRequestHeader("Content-type", "application/json");
+            xhr.onload = function(){
+                if (this.status == 200){
+                    res = JSON.parse(this.responseText);
+                    output = `Your name is ${res.name} and you are ${res.age} years old.`;
+                    document.getElementById('output').textContent = output;
+                }
+            }
+            xhr.send(JSON.stringify(userInfo));
+        }
+
+        document.querySelector('#postDataButton').addEventListener('click', postData);
+        function postData(){
+            let name = document.querySelector('#name4').value;
+            let age = document.querySelector('#age4').value;
+            let userInfo = {'name': name, 'age': age};
+
+            let xhr = new XMLHttpRequest();
+            xhr.open('POST', 'http://127.0.0.1:5000/', true);
+            xhr.setRequestHeader("Bearer-Token", "12345abced");
+            xhr.onload = function(){
+                if (this.status == 200){
+                    res = JSON.parse(this.responseText);
+                    output = `Your name is ${res.name} and you are ${res.age} years old.`;
+                    document.getElementById('output').textContent = output;
+                }
+            }
+            xhr.send(JSON.stringify(userInfo));
+        }
+    </script>
+</body>
+</html>
